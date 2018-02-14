@@ -4,9 +4,18 @@ namespace BashSoft
 {
     class Launcher
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            InputReader.StartReadingCommands();
+            Tester tester = new Tester();
+            IOManager ioManeger = new IOManager();
+            StudentsRepository repo = new StudentsRepository(new RepositorySorter(), new RepositoryFilter());
+
+            CommandInterpreter currentInterpreter = new CommandInterpreter(tester, repo, ioManeger);
+
+            InputReader reader = new InputReader(currentInterpreter);
+
+            reader.StartReadingCommands();
+
         }
     }
 }

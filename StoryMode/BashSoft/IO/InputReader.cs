@@ -4,10 +4,16 @@ using System.Text;
 
 namespace BashSoft
 {
-    class InputReader
+    public class InputReader
     {
+        private CommandInterpreter interpreter;
         private const string endCommand = "quit";
-        public static void StartReadingCommands()
+
+        public InputReader(CommandInterpreter interpreter)
+        {
+            this.interpreter = interpreter;
+        }
+        public void StartReadingCommands()
         {
             string input = "";
             while (input != endCommand)
@@ -15,7 +21,7 @@ namespace BashSoft
                 OutputWriter.WriteMessage($"{SessionData.currentPath}>");
                 input = Console.ReadLine();
                 input = input.Trim();
-                CommandInterpreter.InterpredCommand(input);
+                this.interpreter.InterpredCommand(input);
             }
         }
     }

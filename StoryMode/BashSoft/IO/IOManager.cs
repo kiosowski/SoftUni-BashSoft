@@ -1,13 +1,14 @@
-﻿using System;
+﻿using BashSoft.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace BashSoft
 {
-    public static class IOManager
+    public class IOManager
     {
-        public static void TraverseDirectory(int depth)
+        public void TraverseDirectory(int depth)
         {
             OutputWriter.WriteEmptyLine();
             int initialIdentation = SessionData.currentPath.Split('\\').Length;
@@ -41,28 +42,26 @@ namespace BashSoft
                     OutputWriter.DisplayException(ExceptionMessages.UnauthorizedAccessExceptionMessage);
                 }
             }
-            
-
         }
-            public static void CreateDirectoryInCurrentFolder(string name)
-            {
-                string path = GetCurrentDirectoryPath() + "\\" + name;
+        public void CreateDirectoryInCurrentFolder(string name)
+        {
+            string path = GetCurrentDirectoryPath() + "\\" + name;
             try
             {
                 Directory.CreateDirectory(path);
             }
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
-                OutputWriter.DisplayException(ExceptionMessages.ForbiddenSymbolsContainedInName);
+                throw new InvalidFileNameException();
             }
-            }
+        }
 
-            public static string GetCurrentDirectoryPath() => SessionData.currentPath;
+        public string GetCurrentDirectoryPath() => SessionData.currentPath;
 
-            public static void ChangeCurrentDirectoryRelative(string relativePath)
+        public void ChangeCurrentDirectoryRelative(string relativePath)
+        {
+            if (relativePath == "..")
             {
-                if (relativePath == "..")
-                {
                 try
                 {
                     string currentPath = SessionData.currentPath;
@@ -70,28 +69,27 @@ namespace BashSoft
                     string newPath = currentPath.Substring(0, indexOfLastSlash);
                     SessionData.currentPath = newPath;
                 }
-                catch(ArgumentOutOfRangeException)
+                catch (ArgumentOutOfRangeException)
                 {
-                    OutputWriter.DisplayException(ExceptionMessages.UnableToGoHigherInPartitionHierarchy);
-                }
-                }
-                else
-                {
-                    string currentPath = SessionData.currentPath;
-                    currentPath += "\\" + relativePath;
-                    ChangeCurrentDirectoryAbsolute(currentPath);
+                    throw new InvalidPathException();
                 }
             }
-
-            public static void ChangeCurrentDirectoryAbsolute(string absolutePath)
+            else
             {
-                if (!Directory.Exists(absolutePath))
-                {
-                    OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
-                    return;
-                }
-                SessionData.currentPath = absolutePath;
+                string currentPath = SessionData.currentPath;
+                currentPath += "\\" + relativePath;
+                ChangeCurrentDirectoryAbsolute(currentPath);
             }
         }
 
+        public void ChangeCurrentDirectoryAbsolute(string absolutePath)
+        {
+            if (!Directory.Exists(absolutePath))
+            {
+                throw new InvalidPathException();
+            }
+            SessionData.currentPath = absolutePath;
+        }
     }
+
+}

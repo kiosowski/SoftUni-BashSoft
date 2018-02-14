@@ -5,9 +5,9 @@ using System.Text;
 
 namespace BashSoft
 {
-    public static class Tester
+    public class Tester
     {
-        public static void CompareContent(string userOutputPath, string expectedOutputPath)
+        public void CompareContent(string userOutputPath, string expectedOutputPath)
         {
             try
             {
@@ -23,13 +23,13 @@ namespace BashSoft
                 PrintOutput(mismatches, hasMisMatch, mismatchPath);
                 OutputWriter.WriteMessageOnNewLine("Files read!");
             }
-            catch(FileNotFoundException)
+            catch(IOException io)
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                OutputWriter.DisplayException(io.Message);
             }
         }
 
-        private static void PrintOutput(string[] mismatches, bool hasMisMatch, string mismatchPath)
+        private void PrintOutput(string[] mismatches, bool hasMisMatch, string mismatchPath)
         {
             if (hasMisMatch)
             {
@@ -50,7 +50,7 @@ namespace BashSoft
             OutputWriter.WriteMessageOnNewLine("Files are identical. There are no mismatches.");
         }
 
-        private static string[] GetLinesWithPossibleMisMatches(string[] actualOutputLines, string[] expectedOutputLines, out bool hasMisMatch)
+        private string[] GetLinesWithPossibleMisMatches(string[] actualOutputLines, string[] expectedOutputLines, out bool hasMisMatch)
         {
             hasMisMatch = false;
             string output = string.Empty;
@@ -83,7 +83,7 @@ namespace BashSoft
             return mismatches;
         }
 
-        public static string GetMismatchPath(string expectedOutputPath)
+        public string GetMismatchPath(string expectedOutputPath)
         {
             int indexOf = expectedOutputPath.LastIndexOf('\\');
             string directoryPath = expectedOutputPath.Substring(0, indexOf);

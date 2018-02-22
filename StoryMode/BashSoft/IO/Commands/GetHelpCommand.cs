@@ -7,16 +7,17 @@ namespace BashSoft.IO.Commands
 {
     public class GetHelpCommand : Command
     {
-        public GetHelpCommand(string input, string[] data) : base(input,data)
+        public GetHelpCommand(string input, string[] data, Tester judge, StudentsRepository repository, IOManager inputOutputManager) : base(input, data, judge, repository, inputOutputManager)
         {
-
         }
+
         public override void Execute()
         {
-            if (this.Data.Length!= 1)
+            if (this.Data.Length != 1)
             {
                 throw new InvalidCommandException(this.Input);
             }
+
             this.DisplayHelp();
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BashSoft.IO.Commands
 {
-    public abstract class Command : 
+    public abstract class Command
     {
         private string input;
         private string[] data;
